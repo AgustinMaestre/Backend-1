@@ -1,0 +1,11 @@
+[
+    {
+        "id": 1,
+        "title": "Cocina",
+        "description": "Sal",
+        "price": 300,
+        "thumbnail": "imagen",
+        "code": "123abc",
+        "stock": 80
+    }
+]

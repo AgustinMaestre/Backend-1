@@ -1,64 +1,114 @@
+const fs = require('fs')
+
+const path = 'ProductsFije.json'
+
 class ProductManager {
-    constructor() {
+    constructor(path) {
+        this.path = path
         this.products = []
     }
 
-    addProduct(title, description, price, thumbnail, code, stock) {
-        if (this.existCode(code)){
-            console.log('Producto existente');
-        }
-        else {
-            if (title && description && price && thumbnail && code && stock){
-                let producto = {
-                    id: !this.products.length
-                        ? 1
-                        : this.products[this.products.length - 1].id + 1,
-                    title,
-                    description,
-                    price,
-                    thumbnail,
-                    code,
-                    stock
-                }
-                this.products.push(producto)
+    async addProduct(title, description, price, thumbnail, code, stock) {
+        try {
+            if (this.existCode(code)) {
+                console.log('Producto existente');
             }
             else {
-                console.log('Completar los datos faltantes')
+                if (title && description && price && thumbnail && code && stock) {
+                    let producto = {
+                        id: !this.products.length
+                            ? 1
+                            : this.products[this.products.length - 1].id + 1,
+                        title,
+                        description,
+                        price,
+                        thumbnail,
+                        code,
+                        stock
+                    }
+                    this.products.push(producto);
+                    await fs.promises.writeFile(this.path, JSON.stringify(this.products))
+                }
+                else {
+                    console.log('Completar los datos faltantes')
+                }
             }
+        } catch (error) {
+            return error
+        }
+
+    }
+
+    async updateProducts(id, title, description, price, thumbnail, code, stock) {
+        try {
+            const listProducts = await this.getProducts()
+            const newListProducts = listProducts.map(e => {
+                if (e.id === id) {
+                    const updateProducts = {
+                        ...e, title, description, price, thumbnail, code, stock
+                    }
+                    return updateProducts
+                }
+                else {
+                    return e
+                }
+            })
+            await fs.promises.writeFile(this.path, JSON.stringify(newListProducts))
+        } catch (error) {
+            return error
         }
     }
 
-    getProducts() {
-        return this.products
-    }
+    async getProducts() {
 
-    getProductsById(id) {
-        let productId = this.findProduct(id)
-        if (!this.findProduct(id)) {
-            productId = "No se encuentra el dato solicitado"
+        if (fs.existsSync(this.path)) {
+            const productsfile = await fs.promises.readFile(this.path, 'utf-8')
+            return JSON.parse(productsfile)
+        } else {
+            return []
         }
-        return productId;
     }
 
-//funciones auxiliares
+    async getProductsById(id) {
+        try {
+            const prod = await this.getProducts()
+            const findProduct = prod.find(p => p.id === id)
+            if (!findProduct) {
+                return "No se encuentra el dato solicitado"
+            } else {
+                return findProduct
+            }
+        } catch (error) {
+            return error
+        }
+    }
+
+    async delectProduct(id) {
+        try {
+            const products = await this.getProducts()
+            const newArrayProducts = products.filter(p => p.id !== id)
+            await fs.promises.writeFile(this.path, JSON.stringify(newArrayProducts))
+        } catch (error) {
+            return error
+        }
+    }
+
+    //funciones auxiliares
 
     existCode(code) {
         let exist = this.products.some(product => product.code == code)
         return exist;
     }
 
-    findProduct(id) {
-        let searchProduct = this.products.find(product => product.id == id)
-        return searchProduct;
-    }
 }
 
 // Repetimos en modo de ejemplo un mismo producto para corroborar que no se agregue dos veces
 
-const productManager = new ProductManager()
+const productManager = new ProductManager('ProductsFile.json')
 productManager.addProduct("Alimento", "Arroz", 250, "imagen", "123abc", 60);
 productManager.addProduct("Mueble", "Armario", 25000, "imagen", "123abc", 90);
-productManager.addProduct("Mueble", "Armario", 25000, "imagen", "123abd", 85);
+//productManager.addProduct("Mueble", "Armario", 25000, "imagen", "123abd", 85);
+productManager.updateProducts(1, "Cocina", "Sal", 300, "imagen", "123abc", 80)
 console.log(productManager.getProducts())
 
 
