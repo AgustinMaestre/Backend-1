@@ -1,0 +1,92 @@
+[
+    {
+      "title": "Test Product 01",
+      "descripction": "Test Description",
+      "price": 100,
+      "thumbnail": "No image available",
+      "code": 123,
+      "stock": 10,
+      "id": 1
+    },
+    {
+      "title": "Test Product 02",
+      "descripction": "Test Description 02",
+      "price": 400,
+      "thumbnail": "No Image available 02",
+      "code": 411,
+      "stock": 40,
+      "id": 2
+    },
+    {
+      "title": "Test Product 03",
+      "descripction": "Test Description 03",
+      "price": 200,
+      "thumbnail": "No image available 03",
+      "code": 213,
+      "stock": 20,
+      "id": 3
+    },
+    {
+      "title": "Test Product 04",
+      "descripction": "Test Description 04",
+      "price": 300,
+      "thumbnail": "No image available 04",
+      "code": 321,
+      "stock": 30,
+      "id": 4
+    },
+   {
+      "title": "Test Product 05",
+      "descripction": "Test Description 05",
+      "price": 300,
+      "thumbnail": "No image available 05",
+      "code": 987,
+      "stock": 30,
+      "id": 5
+    },
+  {
+      "title": "Test Product 06",
+      "descripction": "Test Description 06",
+      "price": 100,
+      "thumbnail": "No image available 06",
+      "code": 789,
+      "stock": 10,
+      "id": 6
+    },
+    {
+      "title": "Test Product 07",
+      "descripction": "Test Description 07",
+      "price": 400,
+      "thumbnail": "No Image available 07",
+      "code": 879,
+      "stock": 40,
+      "id": 7
+    },
+    {
+      "title": "Test Product 08",
+      "descripction": "Test Description 08",
+      "price": 200,
+      "thumbnail": "No image available 08",
+      "code": 997,
+      "stock": 20,
+      "id": 8
+    },
+    {
+      "title": "Test Product 09",
+      "descripction": "Test Description 09",
+      "price": 300,
+      "thumbnail": "No image available 09",
+      "code": 887,
+      "stock": 30,
+      "id": 9
+    },
+   {
+      "title": "Test Product 10",
+      "descripction": "Test Description 10",
+      "price": 300,
+      "thumbnail": "No image available 10",
+      "code": 777,
+      "stock": 30,
+      "id": 10
+    }
+  ]
