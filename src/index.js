@@ -3,7 +3,6 @@ import cartRouter from './routes/carts.js'
 import productsRouter from './routes/products.js'
 
 const app = express()
-const manager = new ProductManager('products.json')
 
 app.use(json())
 app.use(urlencoded({ extended: true }))
