@@ -1,11 +1,11 @@
-import { promises } from 'fs';
+import { existsSync, promises } from 'fs';
+import { ProductManager } from './ProductManager.js'
+
+const productManager = new ProductManager();
 
 class CartManager {
-    carts;
-    products;
-    constructor(file) {
-        this.carts = file;
-        this.products = file;
+    constructor(){
+        this.path = "carts.json"
     }
 
     async getId() {
@@ -21,18 +21,22 @@ class CartManager {
 
     async getCarts() {
         try {
-            const cartsFile = await promises.readFile(this.carts, 'utf-8')
-            return JSON.parse(cartsFile)
+            if (existsSync(this.path)){
+                const cartsFile = await promises.readFile(this.path, 'utf-8')
+                return JSON.parse(cartsFile)
+            } else {
+                return []
+            }
         } catch (error) {
             console.log(error);
         }
     }
 
-    async addCart(cart) {
+    async addCart() {
         try {
             const getCart = await this.getCarts();
-            getCarts.push({ ...cart, id: await this.getId() })
-            await promises.writeFile(this.carts, JSON.stringify(getCart))
+            getCarts.push({ id: await this.getId(), products: [] })
+            await promises.writeFile(this.path, JSON.stringify(getCart))
         } catch (error) {
             return error
         }
@@ -40,8 +44,8 @@ class CartManager {
     }
 
     async getCartById(id) {
-        const prod = await this.getCarts()
-        const findCart = prod.find(c => c.id === id)
+        const carts = await this.getCarts()
+        const findCart = carts.find((c) => c.id === id)
         if (!findCart) {
             return "No se encuentra el dato solicitado"
         } else {
@@ -49,34 +53,26 @@ class CartManager {
         }
     }
 
-    async getProducts() {
-        const products = await promises.readFile(this.products, 'utf-8')
-        return products
-    }
+    async addProductsToCart(idCart, idProduct) {
 
-    async addProductsToCart(pId, cId, product) {
-        // Llamamos a todos los carritos
-        const carts = await this.getProducts();
-        carts = JSON.parse(carts); 
-
-        // Devuelve el cart seleccionado por id
-        const cartValues = Object.values(carts[cId - 1]);
-
-        // Array de productos de un carrito determinado. [1] identifica el array de productos de un carrito
-        const cartProducts = cartValues[1];
-
-        // Ubica el producto por el pId. Si no lo encuentra es undefined
-        const isInCart = cartProducts.find((prod) => prod.id == pId)
-
-        if (isInCart) {
-            isInCart.quantity++
-        } else {
-            cartProducts.push(product)
+        const carts = await this.getCartById(idCart);
+        if (!carts) {
+            throw new Error('No existe ningun carrito con ese ID')
         }
+        const product = await productManager.getProductById(idProduct);
+        if (!product) {
+            throw new Error('No existe ningun producto con ese ID')
+        }
+        const productIndex = carts.products.findIndex((p)=>p.product === idProduct)
 
-        await promises.writeFile(this.carts, JSON.stringify(carts))
+        if (productIndex === -1) {
+            const newProduct = { product: idProduct, quantity: 1}
+            carts.products.push(newProduct)
+        } else {
+            carts.products[productIndex].quantity++
+        }
     }
 
 }
 
-export default CartManager;
+export { CartManager };

@@ -1,59 +1,67 @@
 import { Router } from "express";
-import ProductManager from "../../ProductManager.js";
+import { ProductManager } from "../../ProductManager.js";
 
-const manager = new ProductManager('./products.json');
 const productsRouter = Router();
-
-const product1 = {
-    title: 'Product1',
-    description: 'Description1',
-    price: 1000,
-    thumbnail: 'Image1',
-    code: 1234,
-    stock: 10,
-    status: true
-}
+const productmanager = new ProductManager();
 
 productsRouter.get('/', async (req, res) => {
-    const { limit } = req.query;
-    const products = await manager.getProducts()
-    if (limit == undefined) {
-        res.send(products)
+    const { limit } = req.query
+    const products = await productmanager.getProducts()
+    if (limit){
+        const prodLimit = products.slice(0, +limit)
+        res.status(200).json({ message: 'Producto econtrado', prodLimit})
     } else {
-        res.send(products.slice(0, limit))
+        res.status(200).json({ message: 'Productos econtrado', products})
     }
 })
 
 productsRouter.get('/:pId', async (req, res) => {
-    const pid = req.params.pId;
-    const productId = await manager.getProductsById(pid);
+    const { pid } = req.params;
+    const productId = await productmanager.getProductsById(+pid);
     if (!productId) {
-        res.status(404)('Id not found')
+        return res.status(404).json({ message: 'No se encontro producto con ese ID'})
     } else {
-        res.send(productId)
+        res.status(200).json({ message: 'Producto encontrado', productId})
     }
 })
 
-productsRouter.post('/add', async (req, res) => {
-    await manager.addProduct(product1);
-    res.send('Added product')
+productsRouter.post('/', async (req, res) => {
+    const { title, description, price, thumbnail, code, stock, status, category } = req.body
+    try {
+        const response = await productmanager.addProduct(req.body);
+        res.status(200).json({ message: 'Producto añadido correctamente', product: response})
+    } catch (error) {
+        return error
+    }
+
 })
 
 productsRouter.put ('/:pid', async (req, res) => {
-    const id = req.params.pid;
-    const update = req.body;
-    const idNum = parseInt(id);
+    const { id } = req.params;
+    try {
+        const response = await productmanager.updateProducts(+id, req.body)
+        if (!response) {
+            return res.status(404).json({ message: 'Producto no existente'})
+        }
+        res.status(200).json({ message: 'Producto añadido correctamente'})
+    } catch (error) {
+        return error
+    }
 
-    await manager.updateProducts(idNum, update)
-    res.send('Update product')
 })
 
 productsRouter.delete('/:pid', async (req, res) => {
-    const id = req.params.pid;
-    const idNum = parseInt(id);
+    const { id } = req.params;
+    try {
+        const response = await productmanager.delectProduct(+id)
+        if (!response) {
+            return res.status(404).json({ message: 'Producto no existente'})
+        }
+        res.status(200).json({ message: 'Producto eliminado correctamente'})
+    } catch (error) {
+        return error
+    }
 
-    await manager.delectProduct(idNum)
-    res.send('Deleted product')
 })
 
 export default productsRouter

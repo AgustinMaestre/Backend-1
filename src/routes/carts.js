@@ -1,38 +1,31 @@
 import { Router } from "express";
-import CartManager from "../../CartManager.js";
+import { CartManager } from "../../CartManager.js"
 
 const cartRouter = Router();
-const manager = new CartManager(".carts.json");
-const products = new CartManager("./product.json");
+const cartManager = new CartManager()
 
-const newCart = { id:0, products: [] };
-
-cartRouter.post('/add', async (req, res) => {
-    await manager.addCart(newCart);
-    res.send('Added cart successfuly')
+cartRouter.post('/', async (req, res) => {
+    const newCart = await cartManager.addCart();
+    res.status(201).json({ message: 'Carrito creado', cart: newCart })
 })
 
 cartRouter.get('/:cid', async (req, res) => {
-    const id = req.params.cid;
-    const cartId = await manager.getCartById(id);
+    const { id } = req.params;
+    const cartId = await cartManager.getCartById(+id);
     if (!cartId) {
-        res.status(404).json({message: 'ID product not found'})
+        res.status(404).json({message: 'ID del producto no encontrado'})
     } else {
-        res.send(cartId.products)
+        res.status(200).json({ message: 'Productos en el carrito', products: cartId.products })
     }
 });
 
 cartRouter.post('/:cid/product/:pid', async (req, res) => {
-    const cid = req.params.cid;
-    const pid = req.params.pid;
-
-    const totalProducts = JSON.parse(await products.getProducts()); // Traemos todos los productos de products.json
-    const productId = totalProducts.find((prod) => prod.id == id); // Identificamos un producto en particular por el pId
-    const newProduct = { id: productId.id, quantity: 1}; // El producto que añadimos al carrito
+    const { cid, pid } = req.params;
+    const { quantity } = req.body;
     
-    await manager.addProductsToCart(pid, cid, newProduct);
+    await cartManager.addProductsToCart(+pid, +cid, quantity);
 
-    res.send('Product added to cart')
+    res.status(200).json({ message: 'Producto agregado al carrito con exito' })
 });
 
 export default cartRouter;
