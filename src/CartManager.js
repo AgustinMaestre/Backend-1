@@ -34,9 +34,15 @@ class CartManager {
 
     async addCart() {
         try {
-            const getCart = await this.getCarts();
-            getCarts.push({ id: await this.getId(), products: [] })
-            await promises.writeFile(this.path, JSON.stringify(getCart))
+            const carts = await this.getCarts();
+            let id;
+            if (!carts.length) {
+                id = 1;
+            } else {
+                id = carts[carts.length -1].id + 1
+            }
+            const newCarts = [...carts, { id: id, products: []}]
+            await promises.writeFile(this.path, JSON.stringify(newCarts))
         } catch (error) {
             return error
         }

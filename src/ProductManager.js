@@ -3,19 +3,8 @@ import { existsSync, promises } from 'fs';
 
 class ProductManager {
     constructor() {
-        this.path = 'products.json'
+        this.path = "products.json"
     }
-
-    /*     async getId() {
-            let count = 0
-            const getProduct = await this.getProducts();
-            getProduct.forEach(product => {
-                if (product.id > count) {
-                    count = product.id
-                }
-            });
-            return count + 1;
-        } */
 
     async addProduct(product) {
         try {
@@ -84,50 +73,3 @@ class ProductManager {
 }
 
 export { ProductManager };
-
-
-
-/* //test:
-async function test() {
-    const manager = new ProductManager()
-    await manager.addProduct({
-        title: "producto1",
-        description: "testeando",
-        price: 300,
-        thumbnail: "imagen",
-        code: "abc123",
-        status: true,
-        category: "producto1",
-        stock: 20
-    });
-    await manager.addProduct({
-
-        title: "producto2",
-        description: "testeando",
-        price: 300,
-        thumbnail: "imagen",
-        code: "abc124",
-        stock: 20
-    })
-    console.log(await manager.getProducts())
-} */
-
-/* //GET PRODUCT BY ID
-    console.log(await manager.getProductById(1)) */
-
-
-/* //DELETE PRODUCT BY ID 
-     await manager.deleteProductById(2)
-     console.log( await manager.getProducts()) */
-
-
-/* //UPDATE PRODUCT 
- await manager.updateProduct(1,{        
-        title: "Producto1",
-        description: "Producto",        
-        code: "art123"              
-    })
-    console.log( await manager.getProducts()) */
-
-
-/* test() */

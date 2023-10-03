@@ -1,18 +1,23 @@
 import { Router } from "express";
-import { ProductManager } from "../../ProductManager.js";
+import { ProductManager } from "../ProductManager.js";
 
 const productsRouter = Router();
 const productmanager = new ProductManager();
 
-productsRouter.get('/', async (req, res) => {
-    const { limit } = req.query
-    const products = await productmanager.getProducts()
-    if (limit){
-        const prodLimit = products.slice(0, +limit)
-        res.status(200).json({ message: 'Producto econtrado', prodLimit})
-    } else {
-        res.status(200).json({ message: 'Productos econtrado', products})
+productsRouter.get("/", async (req, res) => {
+    const { limit } = req.query;
+    try {
+        const products = await productmanager.getProducts()
+        if (limit){
+            const prodLimit = products.slice(0, +limit)
+            res.status(200).json({ message: 'Producto econtrado', prodLimit})
+        } else {
+            res.status(200).json({ message: 'Productos econtrado', products})
+        }
+    } catch (error) {
+        return error
     }
+
 })
 
 productsRouter.get('/:pId', async (req, res) => {
