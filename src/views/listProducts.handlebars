@@ -1,0 +1,32 @@
+<form id="addForm">
+    Title: <input type="string" name="title" id="title">
+
+    Description: <input type="string" name="description" id="description">
+
+    Status: <input type="boolean" name="status" id="status">
+
+    Price: <input type="number" name="price" id="price">
+
+    Code: <input type="string" name="code" id="code">
+
+    Stock: <input type="number" name="stock" id="stock">
+
+    Category: <input type="string" name="category" id="category">
+
+    <input type="submit" value="enviar">
+</form>
+
+<h2 id="titleT"></h2>
+<p id="descriptionT"></p>
+<p id="statusT"></p>
+<p id="priceT"></p>
+<p id="codeT"></p>
+<p id="stockT"></p>
+<p id="categoryT"></p>
+
+
+<div id="divListProducts"></div>
+
+
+<script src="/socket.io/socket.io.js"></script>
+<script src="/js/index.js"></script>
